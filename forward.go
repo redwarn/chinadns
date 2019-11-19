@@ -85,11 +85,8 @@ func (f *ChinaDNS) isInsideChina(res *dns.Msg) bool {
 		}
 		err := f.Geoip.Lookup(ip, &record)
 		if err != nil {
-			log.Warningf("Unable to lookup IP: %v", err)
 			return false
 		}
-		log.Debugf("Lookup result: %v in %v", ip.String(), record.Country.ISOCode)
-
 		if record.Country.ISOCode != "CN" {
 			return false
 		}
@@ -187,11 +184,10 @@ func (f *ChinaDNS) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Ms
 		}
 		if f.isInsideChina(ret){
 			_ = w.WriteMsg(ret)
+			return 0,nil
 		}
-
-		return 0, taperr
+		return plugin.NextOrFailure(f.Name(), f.Next, ctx, w, r)
 	}
-
 	return plugin.NextOrFailure(f.Name(), f.Next, ctx, w, r)
 
 }

@@ -2,6 +2,7 @@ package chinadns
 
 import (
 	"fmt"
+	"github.com/oschwald/maxminddb-golang"
 	"strconv"
 	"time"
 
@@ -125,6 +126,17 @@ func parseStanza(c *caddy.Controller) (*ChinaDNS, error) {
 
 func parseBlock(c *caddy.Controller, f *ChinaDNS) error {
 	switch c.Val() {
+	case "geoip":
+		var dbFile string
+		if !c.NextArg() {
+			return c.ArgErr()
+		}
+		dbFile = c.Val()
+		geoipDB, err := maxminddb.Open(dbFile)
+		if err != nil {
+			return c.ArgErr()
+		}
+		f.Geoip = geoipDB
 	case "except":
 		ignore := c.RemainingArgs()
 		if len(ignore) == 0 {
