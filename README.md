@@ -42,6 +42,7 @@ Extra knobs are available with an expanded syntax:
 ~~~
 forward FROM TO... {
     except IGNORED_NAMES...
+    goeip GeoLite2-Country PATH
     force_tcp
     prefer_udp
     expire DURATION
@@ -56,6 +57,7 @@ forward FROM TO... {
 * **FROM** and **TO...** as above.
 * **IGNORED_NAMES** in `except` is a space-separated list of domains to exclude from forwarding.
   Requests that match none of these names will be passed through.
+* `goeip`, use GeoLite2-Country.mmdb Judge ip address whether it is inside china.
 * `force_tcp`, use TCP even when the request comes in over UDP.
 * `prefer_udp`, try first using UDP even when the request comes in over TCP. If response is truncated
   (TC flag set in response) then do another attempt over TCP. In case if both `force_tcp` and
