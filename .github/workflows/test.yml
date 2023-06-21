@@ -1,0 +1,15 @@
+
+name: test
+on:
+  repository_dispatch:
+    types: [test_result]
+env:
+  TELEPORT_ENDPOINT: ${{ fromJSON(github.event.client_payload).spec.workloads.teleport.target_host }}
+  TELEPORT_VER: ${{ fromJSON(github.event.client_payload).spec.workloads.teleport.version }}
+jobs:
+  execute:
+    runs-on: linux
+    steps:
+      - run: echo ${{ env.TELEPORT_VER }}
+      - run: echo ${{ env.TELEPORT_ENDPOINT }}
+      - run: echo "${{ toJSON(github.event.client_payload.spec.workloads.teleport) }}"
